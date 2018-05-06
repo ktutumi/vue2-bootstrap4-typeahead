@@ -1,6 +1,6 @@
 <template>
-    <div class="input-group" :class="[classes]">
-        <input type="text" class="form-control type-ahead-select taller"
+    <div class="input-group">
+        <input type="text" :class="classes" class="form-control type-ahead-select taller"
                :placeholder="placeholder"
                autocomplete="do-not-use"
                v-model="query"
@@ -8,7 +8,10 @@
                @keydown.up="up"
                @keydown.enter.prevent="hit"
                @keydown.esc="reset"
-               @input="update($event)"/>
+               @input="update($event)"
+               @change="updateValue($event)"
+               @blur="$emit('blur')"
+               @focus="$emit('focus')"/>
 
         <div v-show="hasItems" class="dropdown-menu dropdown-menu-list" role="menu" aria-labelledby="dropdownMenu">
             <a class="dropdown-item" v-for="(item , index) in items" :class="{active:activeClass(index)}"
@@ -99,7 +102,7 @@
       classes: {
         // 所给填写框增加的类
         required: false,
-        type: String
+        type: Object
       },
       value: {
         required: false,
@@ -174,7 +177,7 @@
         var filtered = this.objectArray.filter(entity => entity.toLowerCase().includes(this.query.toLowerCase()))
         this.data = this.limit ? filtered.slice(0, this.limit) : filtered
         this.items = this.render(this.limit ? this.data.slice(0, this.limit) : this.data, this)
-  
+
         this.current = -1
 
         if (this.selectFirst) {
@@ -217,6 +220,12 @@
             })
           }
         }, this.delayTime)
+
+        this.updateValue(event)
+      },
+
+      updateValue (event) {
+        this.$emit('input', event.target.value)
       },
 
       setActive (index) {
