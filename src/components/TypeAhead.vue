@@ -4,6 +4,7 @@
                :placeholder="placeholder"
                autocomplete="do-not-use"
                v-model="query"
+               :disabled="disabled"
                @keydown.down="down"
                @keydown.up="up"
                @keydown.enter.prevent="hit"
@@ -115,6 +116,11 @@
         default: function (item) {
           this.query = item
         }
+      },
+      disabled: {
+        required: false,
+        default: false,
+        type: Boolean
       },
 
       highlighting: {
